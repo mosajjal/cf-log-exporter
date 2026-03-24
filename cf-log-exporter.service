@@ -1,0 +1,23 @@
+[Unit]
+Description=Cloudflare Log Exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/cf-log-exporter
+Restart=on-failure
+RestartSec=10s
+
+EnvironmentFile=/etc/cf-log-exporter.env
+
+# stdout → journald; stderr (slog) → journald tagged separately
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=cf-log-exporter
+
+# State dir at /var/lib/cf-log-exporter/
+StateDirectory=cf-log-exporter
+
+[Install]
+WantedBy=multi-user.target
