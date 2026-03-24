@@ -1,0 +1,4 @@
+cf-log-exporter
+cf-log-exporter-*
+*.env
+state.json

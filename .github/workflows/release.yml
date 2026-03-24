@@ -1,0 +1,36 @@
+name: Release Binaries
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  releases-matrix:
+    name: Release Go Binary
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin, freebsd, openbsd]
+        goarch: ["386", amd64, arm64, arm]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+          - goarch: arm
+            goos: darwin
+          - goarch: "386"
+            goos: openbsd
+          - goarch: arm
+            goos: openbsd
+    steps:
+      - uses: actions/checkout@v6
+      - uses: wangyoucao577/go-release-action@master
+        env:
+          CGO_ENABLED: 0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          project_path: "."
+          binary_name: cf-log-exporter
+          ldflags: "-s -w"
+          build_flags: -v
